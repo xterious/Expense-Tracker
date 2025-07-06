@@ -68,7 +68,7 @@ A comprehensive web application for tracking personal finances with budgeting, v
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/personal-finance-visualizer.git
+   git clone [https://github.com/yourusername/personal-finance-visualizer.git](https://github.com/xterious/Expense-Tracker)
    cd personal-finance-visualizer
    ```
 
