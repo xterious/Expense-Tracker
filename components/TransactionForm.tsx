@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { CalendarIcon, Calculator } from 'lucide-react';
-import { format } from 'date-fns';
-import { toast } from 'sonner';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { CalendarIcon, Calculator } from "lucide-react";
+import { format } from "date-fns";
+import { toast } from "sonner";
 
-import { cn } from '@/lib/utils';
-import { transactionSchema, TransactionFormValues } from '@/lib/validators';
-import { formatCurrency } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
+import { cn } from "@/lib/utils";
+import { transactionSchema, TransactionFormValues } from "@/lib/validators";
+import { formatCurrency } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -18,26 +18,31 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
+} from "@/components/ui/popover";
 
 interface TransactionFormProps {
-  type: 'add' | 'edit';
+  type: "add" | "edit";
   initialData?: TransactionFormValues & { id: string };
   onSuccess: () => void;
   setOpen: (open: boolean) => void;
 }
 
-export function TransactionForm({ type, initialData, onSuccess, setOpen }: TransactionFormProps) {
+export function TransactionForm({
+  type,
+  initialData,
+  onSuccess,
+  setOpen,
+}: TransactionFormProps) {
   const form = useForm<TransactionFormValues>({
     resolver: zodResolver(transactionSchema),
     defaultValues: initialData || {
-      description: '',
+      description: "",
       quantity: 1,
       pricePerUnit: 0,
       date: new Date(),
@@ -45,44 +50,57 @@ export function TransactionForm({ type, initialData, onSuccess, setOpen }: Trans
   });
 
   // Watch quantity and pricePerUnit for real-time calculation
-  const quantity = form.watch('quantity');
-  const pricePerUnit = form.watch('pricePerUnit');
+  const quantity = form.watch("quantity");
+  const pricePerUnit = form.watch("pricePerUnit");
   const totalAmount = (quantity || 0) * (pricePerUnit || 0);
+  const today = new Date();
+  today.setHours(23, 59, 59, 999);
 
   async function onSubmit(data: TransactionFormValues) {
-    const apiEndpoint = type === 'add' ? '/api/transactions' : `/api/transactions/${initialData?.id}`;
-    const method = type === 'add' ? 'POST' : 'PUT';
+    const apiEndpoint =
+      type === "add"
+        ? "/api/transactions"
+        : `/api/transactions/${initialData?.id}`;
+    const method = type === "add" ? "POST" : "PUT";
 
     try {
       const response = await fetch(apiEndpoint, {
         method,
-        headers: { 
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache',
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
         },
         body: JSON.stringify(data),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        throw new Error(
+          errorData.error || `HTTP error! status: ${response.status}`
+        );
       }
 
       const result = await response.json();
-      
+
       if (result.success) {
-        toast.success(`Transaction ${type === 'add' ? 'added' : 'updated'} successfully!`, {
-          description: `${data.description} - ${formatCurrency(totalAmount)}`,
-        });
+        toast.success(
+          `Transaction ${type === "add" ? "added" : "updated"} successfully!`,
+          {
+            description: `${data.description} - ${formatCurrency(totalAmount)}`,
+          }
+        );
         onSuccess();
         setOpen(false);
       } else {
-        throw new Error(result.error || 'Failed to save transaction');
+        throw new Error(result.error || "Failed to save transaction");
       }
     } catch (error) {
       console.error("Failed to submit transaction:", error);
       toast.error("Uh oh! Something went wrong.", {
-        description: error instanceof Error ? error.message : "There was a problem with your request.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "There was a problem with your request.",
       });
     }
   }
@@ -97,7 +115,10 @@ export function TransactionForm({ type, initialData, onSuccess, setOpen }: Trans
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., Groceries, Fuel, Medicine" {...field} />
+                <Input
+                  placeholder="e.g., Groceries, Fuel, Medicine"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -112,12 +133,12 @@ export function TransactionForm({ type, initialData, onSuccess, setOpen }: Trans
               <FormItem>
                 <FormLabel>Quantity</FormLabel>
                 <FormControl>
-                  <Input 
-                    type="number" 
+                  <Input
+                    type="number"
                     step="0.01"
                     min="0.01"
-                    placeholder="e.g., 2" 
-                    {...field} 
+                    placeholder="e.g., 2"
+                    {...field}
                   />
                 </FormControl>
                 <FormMessage />
@@ -132,12 +153,12 @@ export function TransactionForm({ type, initialData, onSuccess, setOpen }: Trans
               <FormItem>
                 <FormLabel>Price per Unit (₹)</FormLabel>
                 <FormControl>
-                  <Input 
-                    type="number" 
+                  <Input
+                    type="number"
                     step="0.01"
                     min="0.01"
-                    placeholder="e.g., 54.99" 
-                    {...field} 
+                    placeholder="e.g., 54.99"
+                    {...field}
                   />
                 </FormControl>
                 <FormMessage />
@@ -158,7 +179,8 @@ export function TransactionForm({ type, initialData, onSuccess, setOpen }: Trans
             </span>
           </div>
           <p className="text-xs text-muted-foreground mt-1">
-            {quantity} × {formatCurrency(pricePerUnit)} = {formatCurrency(totalAmount)}
+            {quantity} × {formatCurrency(pricePerUnit)} ={" "}
+            {formatCurrency(totalAmount)}
           </p>
         </div>
 
@@ -172,14 +194,14 @@ export function TransactionForm({ type, initialData, onSuccess, setOpen }: Trans
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
-                      variant={'outline'}
+                      variant={"outline"}
                       className={cn(
-                        'w-full pl-3 text-left font-normal',
-                        !field.value && 'text-muted-foreground'
+                        "w-full pl-3 text-left font-normal",
+                        !field.value && "text-muted-foreground"
                       )}
                     >
                       {field.value ? (
-                        format(field.value, 'PPP')
+                        format(field.value, "PPP")
                       ) : (
                         <span>Pick a date</span>
                       )}
@@ -193,6 +215,7 @@ export function TransactionForm({ type, initialData, onSuccess, setOpen }: Trans
                     selected={field.value}
                     onSelect={field.onChange}
                     initialFocus
+                    disabled={(date: Date) => date > today}
                   />
                 </PopoverContent>
               </Popover>
@@ -202,7 +225,7 @@ export function TransactionForm({ type, initialData, onSuccess, setOpen }: Trans
         />
 
         <Button type="submit" className="w-full">
-          {type === 'add' ? 'Add Transaction' : 'Save Changes'}
+          {type === "add" ? "Add Transaction" : "Save Changes"}
         </Button>
       </form>
     </Form>
