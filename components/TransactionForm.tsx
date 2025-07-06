@@ -12,6 +12,14 @@ import { formatCurrency } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
+Select;
+import {
   Form,
   FormControl,
   FormField,
@@ -33,7 +41,7 @@ interface TransactionFormProps {
   setOpen: (open: boolean) => void;
 }
 
-export function TransactionForm({
+export default function TransactionForm({
   type,
   initialData,
   onSuccess,
@@ -160,6 +168,37 @@ export function TransactionForm({
                     placeholder="e.g., 54.99"
                     {...field}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="category"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Category</FormLabel>
+                <FormControl>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[
+                        "Groceries",
+                        "Utilities",
+                        "Transport",
+                        "Entertainment",
+                        "Health",
+                        "Other",
+                      ].map((cat) => (
+                        <SelectItem key={cat} value={cat}>
+                          {cat}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>

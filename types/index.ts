@@ -3,9 +3,31 @@ export interface Transaction {
   description: string;
   quantity: number;
   pricePerUnit: number;
-  date: string;
+  date: Date;
+  category:
+    | "Groceries"
+    | "Utilities"
+    | "Transport"
+    | "Entertainment"
+    | "Health"
+    | "Other";
   createdAt?: string;
   updatedAt?: string;
-  // Computed field
-  totalAmount?: number;
+}
+
+export interface MonthlyData {
+  name: string;
+  total: number;
+}
+
+export interface PaginatedResponse {
+  error: string;
+  success: boolean;
+  data: Transaction[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    itemsPerPage: number;
+  };
 }
