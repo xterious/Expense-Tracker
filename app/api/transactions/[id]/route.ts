@@ -14,7 +14,7 @@ export async function GET(request: NextRequest, { params }: { params: Params }) 
             return NextResponse.json({ success: false, error: 'Transaction not found' }, { status: 404 });
         }
         return NextResponse.json({ success: true, data: transaction });
-    } catch (error) {
+    } catch {
         return NextResponse.json({ success: false, error: 'Server Error' }, { status: 500 });
     }
 }
@@ -47,7 +47,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Params 
       return NextResponse.json({ success: false, error: 'Transaction not found' }, { status: 404 });
     }
     return NextResponse.json({ success: true, data: {} });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ success: false, error: 'Server Error' }, { status: 500 });
   }
 }

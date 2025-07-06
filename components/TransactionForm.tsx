@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { CalendarIcon, Calculator } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
-import { useEffect } from 'react';
 
 import { cn } from '@/lib/utils';
 import { transactionSchema, TransactionFormValues } from '@/lib/validators';
@@ -19,7 +18,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
