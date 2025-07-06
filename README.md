@@ -2,7 +2,7 @@
 
 A simple web application for tracking personal finances, built with the T3 stack. This is my submission for the project.
 
-**Live URL:** 
+**Live URL:** https://expense-tracker-kamaleshs-projects-5cd1cc7a.vercel.app/
 
 ## Tech Stack
 
